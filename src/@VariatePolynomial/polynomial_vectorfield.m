@@ -1,4 +1,4 @@
-function [JDP] = polynomial_vectorfield(P)
+function [JDP] = polynomial_vectorfield(obj,P)
 % This function computes the hamiltonian vector field produced by the homogenous
 % polynomial function P
 % It stores the i-th component of the vectorfield in its ith entry

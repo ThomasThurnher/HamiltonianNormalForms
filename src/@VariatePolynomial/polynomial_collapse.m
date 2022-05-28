@@ -1,4 +1,4 @@
-function [Pcoll] = polynomial_collapse(P, varargin)
+function [Pcoll] = polynomial_collapse(obj,P, varargin)
 % Collapses polynomial to only contain terms of unique monomials
 % where any coefficient smaller than tol is discarded
 
