@@ -1,11 +1,26 @@
-function [M,C,K,fnl] = build_model(m1,m2,k1,k2,gamma)
+function [M,C,K,fnl] = build_model()
 %% Makes dynamical system model of the quadratic Shaw Pierre
 
-M = diag([m1,m2]);
-K = [k1+k2  -k2 ;
-      -k2   k1+k2];
-C = zeros(2);
+k1 = 1;
+k2 = 1;
+m1 = 1;
+m2 = 1;
+gamma = pi; % Cubic coefficient
+param_order = 3;
+N= 4;
+n = 2;
 
-fnl(1).coeffs = [gamma;0];
-fnl(1).ind    = [3,0];
+% Hamiltonian
+H2.coeffs = [m1/2, m2/2, 1/2*(k1+k2), 1/2*(k1+k2), -2*k2/2];
+H2.ind    = [ 0    0     2           0          1     ; ...
+                0    0     0           2          1     ; ...
+                2    0     0           0          0     ;...
+                0    2     0           0          0    ];
+
+H3.coeffs = gamma;
+H3.ind    = [3,0,0,0].';
+
+P(2) = H2;
+P(3) = H3;
+
 end

@@ -1,4 +1,4 @@
-function [PmF] = polynomial_subtraction(obj,P,F)
+function [PmF] = polynomial_subtraction(P,F)
 % This function subtracts two homogenous polynomials P - F
 tol = 1e-10;
 

@@ -1,4 +1,4 @@
-function [DP] = polynomial_gradient(obj,P)
+function [DP] = polynomial_gradient(P)
 % This function computes the gradient of a homogenous polynomial function
 
 if isempty(P.coeffs)

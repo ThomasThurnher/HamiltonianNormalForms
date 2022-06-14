@@ -1,4 +1,4 @@
-function [phi] = hamiltonian_flow_2(P,m,order,n,varargin)
+function [phi] = flow_hamiltonian_2(P,m,order,n,varargin)
 % This function computes the time 1 flow induced by the hamiltonian vector field
 % X_P given as phi = exp(X_P)
 % P   - Hamiltonian Function
@@ -70,7 +70,7 @@ end
 function [PBn] = coordinate_PB(PBn,P,N)
 
 for i = 1:N
-    PBn(i) = Poisson_Bracket(PBn(i),P);
+    PBn(i) = polynomial_Poisson_Bracket(PBn(i),P);
 end
 end
 

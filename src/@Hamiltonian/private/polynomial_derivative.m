@@ -1,4 +1,4 @@
-function [DjP] = polynomial_derivative(obj,P,j)
+function [DjP] = polynomial_derivative(P,j)
 % This function computes the derivative dP/Dx_j
 
 if isempty(P.coeffs)

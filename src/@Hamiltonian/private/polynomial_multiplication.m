@@ -1,4 +1,4 @@
-function[PF] = polynomial_multiplication(obj,P,F)
+function[PF] = polynomial_multiplication(P,F)
 % Multiplication of two homogenous polynomials
 tol = 1e-10;
 

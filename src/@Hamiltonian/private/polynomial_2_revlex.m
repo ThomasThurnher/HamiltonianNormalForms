@@ -1,4 +1,4 @@
-function [p_revlex] = polynomial_2_revlex(obj,p)
+function [p_revlex] = polynomial_2_revlex(p)
 % Reorders coefficients and indices of homogenous polynomial to be in revlex
 % ordering. The linear part of phi is the identity which already is in
 % revlex ordering.

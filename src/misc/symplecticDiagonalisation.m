@@ -1,4 +1,4 @@
-function [V, D, W] = linear_transformation(JA,varargin)
+function [V, D, W] = symplecticDiagonalisation(JA,varargin)
 
 N = size(JA,1);
 %{
@@ -66,7 +66,7 @@ elseif N == 6
 [V, LAMBDA, W] = eig(JA);
 [V, D, W] = sort_modes_canonical(V, LAMBDA, W);
 
-J = complex_structure(3);
+J = complex_structure(N/2);
 
 Vodd = V(:,1:2:end-1);
 Veven = V(:,2:2:end);

@@ -1,15 +1,16 @@
-function [K,Vh] = transform_Hamiltonian(H,N,varargin)
+function [K,Vh] = transform_Hamiltonian(obj)
+% Moves Hamiltonian to complex diagonal coordinates via symplectic
+% coordinate change
 
-if isempty(varargin)
-    tol = 1e-10;
-else
-    tol = varargin{1};
-end
+N = 2* obj.n;
+tol = obj.tol;
+
+H = obj.H;
 
 %% Move to complex coordinates, diagonalising the Hamiltonian
 % With linear trafo $\mathcal{C}(p,q) = (x,y)$
-[JA,~,~] = build_model_H(H,N);
-[Vh, ~, ~] = linear_transformation(JA);
+[JA,~,~] = obj.dynamicalSystem();
+[Vh, ~, ~] = symplecticDiagonalisation(JA);
 %% Transform Hamiltonian with a linear coordinate change
 % K = H \circ V
 
@@ -35,4 +36,6 @@ for m = 2:numel(H)
         K(m)=tmp;
     end
 end
+obj.V = Vh;
+obj.H = K;
 end

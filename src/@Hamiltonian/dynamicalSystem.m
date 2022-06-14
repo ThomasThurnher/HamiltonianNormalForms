@@ -1,7 +1,8 @@
-function [A,B,F] = build_model(H,N)
+function [A,B,F] = dynamicalSystem(obj)
 % Given a Hamiltonian, this function creates the corresponding nonlinear
 % autonomous dynamical system
-
+H = obj.H;
+N = 2*obj.n;
 B = eye(N);
 
 VF_lin = polynomial_vectorfield(H(2));

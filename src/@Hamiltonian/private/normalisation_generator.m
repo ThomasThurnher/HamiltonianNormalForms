@@ -1,4 +1,4 @@
-function [P] = compute_generator( Lambda, Hm , resModes, reduction,restol)
+function [P] = normalisation_generator( Lambda, Hm , resModes, reduction,restol)
 % This function computes the generating polynomial of the canonical
 % transformation normalising the ith term of a Hamiltonian which is in
 % normal form up to order m-1, including the quadratic part of it

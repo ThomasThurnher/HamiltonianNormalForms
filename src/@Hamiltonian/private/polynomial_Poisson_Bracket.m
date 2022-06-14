@@ -1,4 +1,4 @@
-function [PB] = Poisson_Bracket(P,F)
+function [PB] = polynomial_Poisson_Bracket(P,F)
 % Computes the Poisson Bracket of two homogenous polynomials P and F which
 % both take inputs x_1 , ... , x_n, y_1, .... y_n.
 tol = 1e-10;

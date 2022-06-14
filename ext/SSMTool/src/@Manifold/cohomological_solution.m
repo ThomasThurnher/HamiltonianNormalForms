@@ -283,7 +283,7 @@ switch obj.Options.notation
         L_k    = reshape(L_k,N,z_k);
         
         % Solve the linear system for the SSM-coefficients
-        parfor f = 1:z_k
+        for f = 1:z_k
             C_k        = B*K_Lambda(f)-A;
             W_0i(:,f) = lsqminnorm(C_k,L_k(:,f));
         end
@@ -298,8 +298,9 @@ switch obj.Options.notation
             
             % Read out coefficients - phitilde and resModes and reduction
             load('phitilde.mat')
-            
-            if reduction
+            %{
+%if reduction is applied
+            if 1 == 2
                 resModes = 1:2;
             end
             
@@ -322,8 +323,9 @@ switch obj.Options.notation
                     
                 end
             end
+        %}
         end
-       %}
+      
         %{
         if k==3
             
