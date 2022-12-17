@@ -1,6 +1,25 @@
-function BB = extract_backbone(obj, modes, omegaRange, order)
-%% copied from SSMTool
+function BB = extract_backbone(obj, modepair, omegaRange, order,W0,figs)
 
+nI   = 50;
+Imax = 0.2;
+
+
+I = (Imax/nI) * (1:nI);
+
+lambda = obj.H(2).coeffs(modepair)
+
+freq = compute_freq(obj.Hred)
+
+
+
+
+%{
+for i = 1:numel(W0)
+    try
+        W0(i).ind = W0(i).ind.';
+    catch
+    end
+end
 %  EXTRACT_BACKBONE This function extracts the *Backbone curves in Polar coordinates.* For two-dimensional
 % SSMs, we use the normal form of paramaterization, where we choose the following
 % form of autonomous reduced dynamics as
@@ -20,23 +39,20 @@ function BB = extract_backbone(obj, modes, omegaRange, order)
 %
 % It follows that the _backbone curves_ in polar coordinates is given by $\Omega=\frac{b(\rho)}{\rho}$.
 
-f1 = figure('Name','Norm');
-f2 = figure('Name',['Amplitude at DOFs ' num2str(obj.FRCOptions.outdof(:)')]);
-figs = [f1, f2];
+%f1 = figure('Name','Norm');
+%f2 = figure('Name',['Amplitude at DOFs ' num2str(obj.FRCOptions.outdof(:)')]);
+%figs = [f1, f2];
 colors = get(0,'defaultaxescolororder');
 
-
-assert(numel(modes)==2,'The analytic backbone computation can only be performed for a two-dimensional SSM/LSM')
 % get options
-[nt, nRho, nOmega, rhoScale, outdof, saveIC]  = ...
-    deal(obj.FRCOptions.nt, obj.FRCOptions.nRho, ...
-    obj.FRCOptions.nPar, obj.FRCOptions.rhoScale, ...
-    obj.FRCOptions.outdof, obj.FRCOptions.saveIC);
-
+[nt, nI, nOmega, IScale, outdof, saveIC]  = ...
+    deal(obj.BBOptions.nt, obj.BBOptions.nI, ...
+    obj.BBOptions.nPar, obj.BBOptions.IScale, ...
+    obj.BBOptions.outdof, obj.BBOptions.saveIC);
 %% setup
 startBB = tic;
-obj.choose_E(modes);
-lambda = obj.E.spectrum(1);
+
+lambda = obj.H(2).coeffs(modepair);
 
 % some checks
 assert(~isreal(lambda),'The eigenvalues associated to the modal subspace must be complex for analytic backbone computation')
@@ -47,36 +63,61 @@ assert(prod([omega0-omegaRange(1),omega0-omegaRange(end)])<0,'The supplied omega
 norders = numel(order);
 for k=1:norders
     %% compute autonomous SSM coefficients
-    [W0,R0] = obj.compute_whisker(order(k));
-    gamma = compute_gamma(R0)
+    
+    set(obj,'resModes',[modepair, obj.n+modepair]);
+    freq = compute_freq(obj.Hred)
 
     %% compute backbone
-    rho = compute_rho_grid(omegaRange,nOmega,rhoScale,gamma,lambda,nRho);
-    [~,b] = frc_ab(rho, 0, gamma, lambda);
+    I   = compute_I_grid(omegaRange,nOmega,IScale,freq,lambda,nI);
+    omega = omega_bb(I, freq, lambda);
 
-    omega = b./rho;
     idx = [find(omega<omegaRange(1)) find(omega>omegaRange(2))];
-    rho(idx) = []; omega(idx) = [];
+    I(idx) = []; omega(idx) = [];
 
     %% Backbone curves in Physical Coordinates
-    stability = true(size(rho)); psi = zeros(size(rho)); epsilon = 0;
 
-    BB = compute_output_polar2D(rho,psi,stability,epsilon,omega,W0,[],1,nt, saveIC, outdof);
-
+   
+    stability = true(size(I)); psi = zeros(size(I)); epsilon = 0;
+    BB = compute_output_actionangle2D(I,psi,stability,epsilon,omega,W0,1,nt, saveIC, outdof);
+ 
     %% plotting
-    plot_FRC(BB,outdof,order(k),'freq','lines',figs,colors(k,:));
+    plot_FRC(BB,outdof,order(k),'freq','lines',figs,colors(k+1,:));
+    
+    
+    I
+    omega    
+    figure()
+    plot(omega,I)
 end
 totalComputationTime = toc(startBB);
 disp(['Total time spent on backbone curve computation = ' datestr(datenum(0,0,0,0,0,totalComputationTime),'HH:MM:SS')])
+
+%}
 end
 
-function rho = compute_rho_grid(omegaRange,nOmega,rhoScale,gamma,lambda,nRho)
+
+function freq = compute_freq(H)
+j = 4;
+
+while j <= numel(H)
+    Hj = H(j);
+    Hj
+    1/1i* j/2 * Hj.coeffs
+    freq(j/2-1) = 1/1i* j/2 * Hj.coeffs;
+    j = j+2;
+end
+
+end
+
+function I = compute_I_grid(omegaRange,nOmega,IScale,freq,lambda,nI)
 omega = linspace(omegaRange(1),omegaRange(end), nOmega);
 %%
 % *Explicit quadratic approximation of the backbone curve*
 %
 % $$\rho_{backbone} = \sqrt{\frac{\Omega-\Im(\lambda)}{\Im(\gamma_1)}}$$
-rho_bb = real(sqrt((omega - imag(lambda))/imag(gamma(1))));
-rhomax = rhoScale * max(rho_bb);
-rho = (rhomax/nRho) * (1:nRho);
+
+I_bb = (abs((omega - lambda)/ freq(1)));
+Imax = IScale * max(I_bb);
+I = (Imax/nI) * (1:nI);
+
 end

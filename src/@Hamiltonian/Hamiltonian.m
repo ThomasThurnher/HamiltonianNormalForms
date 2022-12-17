@@ -4,16 +4,18 @@ classdef Hamiltonian < matlab.mixin.SetGetExactNames
     
     properties
         H          = [];       % struct for hamiltonian
+        Hred       = [];       % reduced hamiltonian
         V          = [];       % symplectic transformation to diagonal coordinates
         degree     = [];       % degree of Hamiltonian
         n          = [];       % system size
         param_order= [];
-
+        resModes   = [];       % resonant modes 
+        
         tol        = 1e-10;    % tolerance for when a polynomial has zero coefficient
         reduction  = false;    % whether model reduction should be performed
 
-        backboneOptions = backboneOptions();        
-        Options = PolyOptions()
+        BBOptions = BBOptions();        
+        Options = PolyOptions();
     end
     
     methods
@@ -40,7 +42,10 @@ classdef Hamiltonian < matlab.mixin.SetGetExactNames
         function set.n(obj,n)
             obj.n = n;
         end
-        
+
+       function set.resModes(obj,resModes)
+            obj.resModes = resModes;
+        end
         function set.param_order(obj,param_order)
             obj.param_order = param_order;
         end
@@ -53,9 +58,27 @@ classdef Hamiltonian < matlab.mixin.SetGetExactNames
         function n = get.n(obj)
             n = obj.n;
         end
+        
+        function Hred = get.Hred(obj)
+            H = obj.H;
+            
+            for i = 1:numel(H)
+                %try
+                if ~isempty(H(i).ind)
+                    ind = H(i).ind(obj.resModes,:);
+                    
+                    idx = find( sum(ind,1) == i );
+
+                    Hred(i).coeffs = H(i).coeffs(idx);
+                    Hred(i).ind    = ind(:,idx);
+                %catch
+                 %   Hred = []
+                end
+            end
+        end
         %% other methods
            
-        BB = extract_backbone(obj, parName, parRange, order)               
+        BB = extract_backbone(obj, modepair, omegaRange, order,W0,figs)               
 
         [H,V] = transform_Hamiltonian(obj);
 

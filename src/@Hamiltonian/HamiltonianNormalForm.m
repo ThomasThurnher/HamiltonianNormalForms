@@ -45,7 +45,6 @@ for i = 3:order+1
         
         Hs{i} = obj.H;
         phis{i-2} = phi_i;
-        phi_i(1)
 
         if i == 3
             phitilde = phi_i;

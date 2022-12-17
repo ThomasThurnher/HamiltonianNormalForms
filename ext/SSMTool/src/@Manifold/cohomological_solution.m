@@ -287,61 +287,7 @@ switch obj.Options.notation
             C_k        = B*K_Lambda(f)-A;
             W_0i(:,f) = lsqminnorm(C_k,L_k(:,f));
         end
-        % {
-        s = (-1)^k
-        if s == -1  % k is odd
 
-            n = N/2;
-            mi = (k-1)/2;
-            u1 = sparse( [1 2 ], [1,1], [mi+1,mi], 2,1);
-            u2 = sparse( [1 2 ], [1,1], [mi,mi+1], 2,1);
-            
-            % Read out coefficients - phitilde and resModes and reduction
-            load('phitilde.mat')
-            %{
-%if reduction is applied
-            if 1 == 2
-                resModes = 1:2;
-            end
-            
-            [mtf1, ~] = ismember(phitilde(k).ind(resModes,:).',u1.','rows');            
-            if ~isempty(mtf1) && any(mtf1)
-                coeff1 = phitilde(i).coeffs(1,mtf1)
-                [utf, ~]=ismember(K.',u1.','rows');
-                if ~isempty(utf) && any(utf)
-                    W_0i(1,utf) = coeff1
-                end
-            end
-            
-            [mtf2, ~] = ismember(phitilde(k).ind(resModes,:).',u2.','rows');            
-            if ~isempty(mtf2) && any(mtf2)
-                coeff2 = phitilde(i).coeffs(n+1,mtf2)
-                [utf2, ~]=ismember(K.',u2.','rows');
-                
-                if ~isempty(utf2) && any(utf2)
-                    W_0i(n+1,utf2) = coeff2
-                    
-                end
-            end
-        %}
-        end
-      
-        %{
-        if k==3
-            
-            %coeff = 0;
-            %coeff = -1.3879i;
-            coeff = -12.337i;
-            W_0i(1,2) = coeff;
-            W_0i(3,3) = coeff;
-            
-        elseif k == 5
-            %coeff = 0;
-            %coeff =  1e3 *1.1841 - 0.8366i;
-            %W_0i(1,3) = coeff;
-            %W_0i(3,4) = coeff;
-        end
-        %}
         R_0i       = reshape(R_0i,l,[]);
         H_k(:,:,1) = W_0i;
         

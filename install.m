@@ -3,13 +3,15 @@ function install
 % also the main software appropriately
 
 
+addpath(fullfile('src/TransformingDS'))
 
+addpath(fullfile('src'))
 
-maindirSSM = strcat(fileparts(mfilename('fullpath')),'ext/SSMTool/');
+addpath(fullfile('src/misc'))
+
+maindirSSM = strcat(fileparts(mfilename('fullpath')),'/ext/SSMTool/');
 
 extdir = 'ext';
-cocoinstall = fullfile(maindirSSM, extdir , 'coco','startup.m');
-run(cocoinstall);
 
 addpath(fullfile(maindirSSM, extdir,'combinator'));
 
